@@ -1,5 +1,7 @@
 # Cap::Gce
 
+[![Gem Version](https://badge.fury.io/rb/cap-gce.svg)](http://badge.fury.io/rb/cap-gce) [![Code Climate](https://codeclimate.com/github/iscreen/cap-gce.png)](https://codeclimate.com/github/iscreen/cap-gce)
+
 Cap-GCE is used to generate Capistrano namespaces and tasks from Google Cloud Compute Engine instance metadata, dynamically building the list of servers to be deployed to.
 
 This documentation assumes familiarity with Capistrano 3.x.
@@ -69,6 +71,84 @@ set :gce_contact_point, nil # nat_ip, network_ip
 
 ## Usage
 
+Imagine you have four servers on Google Cloud Platform named and metadata as follows:
+
+<table>
+  <tr>
+    <td>'Name' metadata</td>
+    <td>'Roles' metadata</td>
+    <td>'Stages' metadata</td>
+  </tr>
+  <tr>
+    <td>server-1</td>
+    <td>web</td>
+    <td>production</td>
+  </tr>
+  <tr>
+    <td>server-2</td>
+    <td>web,app</td>
+    <td>production</td>
+  </tr>
+  <tr>
+    <td>server-3</td>
+    <td>app,db</td>
+    <td>production</td>
+  </tr>
+  <tr>
+    <td>server-4</td>
+    <td>web,db,app</td>
+    <td>staging</td>
+  </tr>
+</table>
+
+Imagine also that we've called our app "testapp", as defined in `config/deploy.rb` like so:
+
+    set :application, "testapp"
+
+### Defining the roles in `config/deploy/[stage].rb`
+
+To define a role, edit `config/deploy/[stage].rb` and add the following:
+
+    gce_role :web
+
+Let's say we edited `config/deploy/production.rb`. Adding this configuration to the file would assign
+the role `:web` to any instance that has the following properties:
+* has a metadata called "Roles" that contains the string "web"
+* has a metadata called "Project" that contains the string "testapp"
+* has a metadata called "Stages" that contains the current stage we're executing (in this case, "production")
+
+Looking at the above table, we can see we would match `server-1` and `server-2`. (You can have multiple
+roles in metadata separated by commas.)
+
+Now we can define the other roles:
+
+    gce_role :app
+    gce_role :db
+
+In the "production" stage, the `:app` role would apply to `server-2` and `server-3`, and the `:db`
+role would apply to `server-3`.
+
+In the "staging" stage, all roles would apply *only* to `server-4`.
+
+### Servers belonging to multiple projects
+
+If you require your servers to have multiple projects deployed to them, you can simply specify
+all the project names you want to the server to be part of in the 'Projects' metadata, separated
+by commas. For example, you could place a server in the `testapp` and `myapp` projects by
+setting the 'Projects' metadata to `testapp,myapp`.
+
+### Servers in multiple stages
+
+If your use-case requires servers to be in multiple stages, simply specify all the stages you want
+the server to be in 'Stages' metadata, separated by commas. For example, you could place a server in
+the `production` and `staging` stages by setting the 'Stages' metadata to `production,staging`.
+
+### Tasks and deployment
+
+You can now define your tasks for these roles in exactly the same way as you would if you weren't
+using this gem.
+
+
 ## Utility tasks
 
 Cap-GCE adds a few utility tasks to Capistrano for displaying information about the instances that you will be deploying to. Note that unlike Capistrano 2.x, all tasks require a stage.
@@ -128,7 +208,7 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/cap-gce. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
+Bug reports and pull requests are welcome on GitHub at https://github.com/iscreen/cap-gce. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
 
 
 ## License
