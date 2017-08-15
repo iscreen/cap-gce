@@ -70,13 +70,13 @@ module CapGCE
       set :gce_project_id, config['project_id'] if config['project_id']
       set :gce_filter, config['filter'] if config['filter']
       set :gce_zone, config['zones'] if config['zones']
-      set :scope, config['scopes'] if config['scopes']
+      set :gce_scope, config['scopes'] if config['scopes']
     end
 
     def fetch_authorizer
       authorizer = Google::Auth::ServiceAccountCredentials.make_creds(
         json_key_io: File.open(fetch(:gce_secret_config)),
-        scope: fetch(:scope)
+        scope: fetch(:gce_scope)
       )
       authorizer.fetch_access_token!
       authorizer

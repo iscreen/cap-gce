@@ -26,7 +26,7 @@ namespace :load do
     set :gce_zone, %w[]
     set :gce_filter, '(status eq "RUNNING")'
     set :gce_fields, nil
-    set :scope, %w[https://www.googleapis.com/auth/compute]
+    set :gce_scope, %w[https://www.googleapis.com/auth/compute]
     set :gce_secret_config, 'config/compute_engine_secret.json'
     set :gce_contact_point, nil # public_ip_address, private_ip_address
   end
