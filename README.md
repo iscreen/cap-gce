@@ -1,4 +1,4 @@
-# Cap::Gce
+# Cap-GCE
 
 [![Gem Version](https://badge.fury.io/rb/cap-gce.svg)](http://badge.fury.io/rb/cap-gce) [![Code Climate](https://codeclimate.com/github/iscreen/cap-gce.png)](https://codeclimate.com/github/iscreen/cap-gce)
 
