@@ -20,7 +20,9 @@ module CapGCE
     end
 
     def tag_value(instance, key)
-      instance.metadata.items.find({}) { |t| t.key == key.to_s }.value
+      find = instance.metadata.items.detect { |t| t.key == key.to_s }
+      return nil unless find
+      find.value
     end
 
     def self.contact_point_mapping
@@ -47,6 +49,7 @@ module CapGCE
     end
 
     def self.nat_ip(instance)
+      return [] if (instance.network_interfaces.map(&:access_configs).flatten - [nil]).empty?
       instance.network_interfaces.map(&:access_configs).flatten.map(&:nat_ip) - [nil]
     end
 
