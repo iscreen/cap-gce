@@ -20,6 +20,7 @@ module CapGCE
     end
 
     def tag_value(instance, key)
+      return nil unless instance.metadata.items
       find = instance.metadata.items.detect { |t| t.key == key.to_s }
       return nil unless find
       find.value
