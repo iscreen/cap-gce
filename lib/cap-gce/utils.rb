@@ -78,8 +78,9 @@ module CapGCE
     end
 
     def fetch_authorizer
+      secret_location = File.expand_path(fetch(:gce_secret_config), Dir.pwd)
       authorizer = Google::Auth::ServiceAccountCredentials.make_creds(
-        json_key_io: File.open(fetch(:gce_secret_config)),
+        json_key_io: File.open(secret_location),
         scope: fetch(:gce_scope)
       )
       authorizer.fetch_access_token!
