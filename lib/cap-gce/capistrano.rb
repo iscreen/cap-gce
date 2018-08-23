@@ -21,7 +21,7 @@ module Capistrano
       def gce_role(name, options = {})
         gce_handler.get_servers_for_role(name).each do |server|
           env.role(name, CapGCE::Utils.contact_point(server),
-                   options_with_instance_id(options, server))
+                   options_with_gce_instance_id(options, server))
         end
       end
 
@@ -31,13 +31,13 @@ module Capistrano
 
       private
 
-      def options_with_instance_id(options, server)
+      def options_with_gce_instance_id(options, server)
         options.merge(instance_id: server.id)
       end
     end
   end
 end
 
-extend Capistrano::DSL::Gce
+self.extend Capistrano::DSL::Gce
 
 Capistrano::Configuration::Server.send(:include, CapGCE::Utils::Server)
