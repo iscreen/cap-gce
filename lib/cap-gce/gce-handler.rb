@@ -69,7 +69,7 @@ module CapGCE
     def get_servers_for_role(role)
       servers = []
       @gce.each do |_, gce|
-        unless gce.items != nil
+        unless gce.items == nil
           servers += gce.items.select do |i|
             instance_has_tag?(i, roles_tag, role) &&
               instance_has_tag?(i, stages_tag, stage) &&
