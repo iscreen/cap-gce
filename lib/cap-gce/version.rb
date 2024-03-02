@@ -1,3 +1,3 @@
 module CapGCE
-  VERSION = '1.1.6'.freeze
+  VERSION = '0.0.9'.freeze
 end
